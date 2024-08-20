@@ -34,10 +34,21 @@ classdef ncvar
     function a = getAttr(self, attrName)
        a = netcdf4.ncatt(self.ncid, self.varId, attrName);
     end
+
+    function res = subsasgn(self, typ, val)
+        error("Not implemented");
+    end
   end
 
   methods (Static)
-      function nvar = create(ncfile, name)
+      function nvar = create(ncid, name, ntype)
+          ndim = length(ntype.dimensions);
+          dimids = zeros(1,ndim);
+          for i=1:ndim
+              dimids(i) = netcdf.inqDimID(ncid, ntype.dimensions{i});
+          end
+          varid = netcdf.defVar(ncid, name, ntype.type, dimids);
+          nvar = netcdf4.ncvar(ncid, varid);
       end
   end
 end

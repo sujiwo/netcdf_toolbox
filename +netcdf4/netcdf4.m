@@ -93,18 +93,25 @@ classdef netcdf4
 
     function res = subsasgn(self, operator, other)
         type = operator(1).type;
-        subs = operator(1).subs;
+        subs = char( operator(1).subs );
 
         switch type
             case '.'
-              a = netcdf4.ncatt.create(self.id, subs);
-              a.set(other);
+                % Attributes
+                a = netcdf4.ncatt.create(self.id, subs);
+                a.set(other);
             case '{}'
+                % Variables
+                if (isa(other, 'netcdf4.nctype'))==0
+                    error("Invalid type specification")
+                end
+                v = netcdf4.ncvar.create(self.id, subs, other);
             case '()'
+                % Dimensions
                 name = char(subs);
                 d = netcdf4.ncdim.create(self.id, name, other);
             otherwise
-                warning([' ## Illegal syntax: "' type '"'])
+                error([' ## Illegal syntax: "' type '"']);
         end
 
         res = self;
