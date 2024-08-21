@@ -38,10 +38,19 @@ classdef ncvar
     function res = subsasgn(self, typ, val)
         error("Not implemented");
     end
+
+    %function res = subsref(self, o)
+    %end
   end
 
   methods (Static)
       function nvar = create(ncid, name, ntype)
+          arguments
+              ncid int32
+              name string
+              ntype netcdf4.nctype
+          end
+
           ndim = length(ntype.dimensions);
           dimids = zeros(1,ndim);
           for i=1:ndim

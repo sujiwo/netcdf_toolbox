@@ -51,6 +51,9 @@ classdef netcdf4
       end
       theType = v.type;
       theSub = char(v.subs);
+
+      % XXX:should be recursive
+      % shift theSub
       switch theType
           case '{}'
               % variable

@@ -13,4 +13,3 @@ ncfd{'temp'} = netcdf4.ncfloat('time', 'lonT', 'latT');
 
 endef(ncfd);   
 close(ncfd);
-            
