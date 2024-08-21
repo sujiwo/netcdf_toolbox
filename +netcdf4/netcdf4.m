@@ -44,26 +44,36 @@ classdef netcdf4
         ds = self.dims;
     end
 
-    function res = subsref(self, v)
+    function res = subsref(self, val)
       if nargin < 2
         res = 0;
         return
       end
-      theType = v.type;
-      theSub = char(v.subs);
+
+      s = val;
+      typ = s(1).type;
+      subs = s(1).subs;
+      s(1) = [];        % shift subsref argument
+      if (isa(subs, 'cell')), subs=subs{1}, end
 
       % XXX:should be recursive
       % shift theSub
-      switch theType
+      switch typ
           case '{}'
               % variable
-              res = self.var(theSub);
+              res = self.var(subs);
+              if isa(res, 'netcdf4.ncvar')
+                  res = subsref(res, s);
+              end
           case '()'
               % dimension
-              res = self.dim(theSub);
+              res = self.dim(subs);
+              if isa(res, 'netcdf4.ncdim')
+                  res = subsref(res, s);
+              end
           case '.'
               % attribute
-              res = self.attribute(theSub);
+              res = self.attribute(subs);
       end
     end
 
