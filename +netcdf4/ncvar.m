@@ -22,13 +22,17 @@ classdef ncvar
 
     function ct = getValue(self)
        ct = netcdf.getVar(self.ncid, self.varId);
+       ct = transpose(ct);
     end
 
     function s = set(self, val)
         s = 1;
     end
 
-    function dims(self)
+    function dms = dimensions(self)
+        for i=1:length(self.dimIds)
+          
+        end
     end
 
     function a = getAttr(self, attrName)
@@ -39,8 +43,22 @@ classdef ncvar
         error("Not implemented");
     end
 
-    %function res = subsref(self, o)
-    %end
+    function res = subsref(self, subs)
+        s = subs;
+        typ = s(1).type;
+        subs = s(1).subs;
+        s(1) = [];
+
+        if isa(subs, 'cell'), subs=subs{1}, end
+        switch (typ)
+            case '()'
+                res = self.getValue();
+            case '.'
+                res = self.getAttr(subs);
+            otherwise
+                error(["### Illegal syntax: '" typ "'"])
+        end
+    end
   end
 
   methods (Static)
